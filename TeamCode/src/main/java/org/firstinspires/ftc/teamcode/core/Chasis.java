@@ -12,6 +12,9 @@ import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
+import org.firstinspires.ftc.teamcode.Commands.Auto.MovementCommand;
+import org.firstinspires.ftc.teamcode.Common.StaticVariables;
+import org.firstinspires.ftc.teamcode.core.Intake.Extendo;
 
 public class Chasis  {
 
@@ -56,12 +59,16 @@ public class Chasis  {
     public void updateFieldCentric() {
         YawPitchRollAngles heading = imu.getRobotYawPitchRollAngles();
         robotH = heading.getYaw(AngleUnit.DEGREES) + 90;
+        //robotH = MovementCommand.robotH;
 
         power = Math.sqrt(Math.pow(vx, 2) + Math.pow(vy, 2));
         theta = Math.atan2(vy, vx) - Math.PI / 4 - (Math.toRadians(robotH) - Math.toRadians(90));
 
         sin = Math.sin(theta); cos = Math.cos(theta);
         maxx = Math.max(Math.abs(sin), Math.abs(cos));
+
+        if ( vx == 0 && vy == 0)
+            power = 0.d;
 
         fr = power * sin / maxx - w;
         fl = power * cos / maxx + w;
@@ -96,5 +103,11 @@ public class Chasis  {
         this.vx = vx;
         this.vy = vy;
         this.w = w;
+
+        if (StaticVariables.teleOp && _hardware._extendo.state == Extendo.ExtendoStates.EXTENDED )
+        {
+            this.vx *= 0.8;
+            this.w *= 0.45;
+        }
     }
 }

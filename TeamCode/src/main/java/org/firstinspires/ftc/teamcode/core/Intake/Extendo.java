@@ -5,6 +5,7 @@ import static org.firstinspires.ftc.teamcode.Common.StaticVariables.telemetry;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.teamcode.Common.PIDF;
@@ -16,16 +17,16 @@ public class Extendo implements Mechanism {
 
     private Hardware _hardware;
 
-    DcMotor motor;
+    public DcMotorEx motor;
 
     public static int INIT = -10;
-    public static  int EXTENDED = 200;
+    public static  int EXTENDED = 245;
     public static int INTERMEDIATE = 180;
-    public static int SCORING = 125;
+    public static int SCORING = 90;
     public static  int TRANSFER = 0;
 
     private PIDF pidf;
-    public static double P = 0.008, I = 0, D = 0.0015, F = 0;
+    public static double P = 0.013, I = 0, D = 0.0017, F = 0.05;
     private int targetPosition, currentPosition, error, offset;
 
     public static double delta = 0.f;
@@ -34,7 +35,7 @@ public class Extendo implements Mechanism {
 
     public Extendo(Hardware hardware)
     {
-        motor = hardwareMap.get(DcMotor.class, "motorExtendo");
+        motor = hardwareMap.get(DcMotorEx.class, "motorExtendo");
         motor.setDirection(DcMotorSimple.Direction.REVERSE);
         motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -100,6 +101,9 @@ public class Extendo implements Mechanism {
 
     @Override
     public void update() {
+        if ( !usePID )
+            return;
+
         currentPosition = motor.getCurrentPosition() - offset;
         error = targetPosition - currentPosition;
 
@@ -109,12 +113,16 @@ public class Extendo implements Mechanism {
             pidf.setCoefficients(P * 2, I, D, F);
         else
             pidf.setCoefficients(P, I, D, F);
+
         power = pidf.getOutput(error);
 
-        if (state == ExtendoStates.TRANSFER )
-            power = Math.min(power, 0);
+        if (state == ExtendoStates.TRANSFER && currentPosition > -10)
+            power = Math.min(power, -0.99);
+        else if ( state == ExtendoStates.TRANSFER)
+            power = Math.min(power, -0.2);
         if (power > 1) power = 1;
         if (power < -1) power = -1;
+
 
 
         motor.setPower(power);
@@ -132,7 +140,13 @@ public class Extendo implements Mechanism {
         targetPosition = position;
         pidf.resetReference();
     }
-
+    public boolean usePID = true;
+    public void disablePID() {
+        usePID = false;
+    }
+    public void enablePID() {
+        usePID = true;
+    }
     public int getCurrentPosition() {
         return currentPosition;
     }

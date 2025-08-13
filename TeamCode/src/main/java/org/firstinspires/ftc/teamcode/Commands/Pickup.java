@@ -15,12 +15,12 @@ import org.firstinspires.ftc.teamcode.core.Intake.V4b;
 
 @Config
 public class Pickup extends SequentialCommandGroup {
-    public static int Sleep = 130;
+    public static int Sleep = 90;
     public Pickup(Hardware hw)
     {
         super(
                 new InstantCommand(()-> {hw._intake.SetState(Intake.IntakeState.Outake);}),
-                new WaitCommand(100),
+                new WaitCommand(30),
                 new ParallelCommandGroup(
                 new InstantCommand(()->{hw.differentialIntake.setPosition(DifferentialIntake.LINEAR_ANGLE_PICKUP, hw.differentialIntake.getRotationAngle());}),
                         new InstantCommand(()->{hw.differentialClaw.setPosition(DifferentialClaw.LINEAR_ANGLE_PICKUP, hw.differentialClaw.getRotationAngle());})
@@ -28,9 +28,10 @@ public class Pickup extends SequentialCommandGroup {
                 new WaitCommand(Sleep),
                 new InstantCommand(()->{hw._intake.SetState(Intake.IntakeState.Intake);}),
                 new WaitCommand(Sleep),
-                new ParallelCommandGroup(
-                        new InstantCommand(()->{hw.differentialIntake.setPosition(DifferentialIntake.LINEAR_ANGLE_SCAN, hw.differentialIntake.getRotationAngle());}),
-                        new InstantCommand(()->{hw.differentialClaw.setPosition(DifferentialClaw.LINEAR_ANGLE_PICKUP, hw.differentialClaw.getRotationAngle());})
+                        new InstantCommand(()-> {
+                            hw.differentialClaw.setPosition(DifferentialClaw.LINEAR_ANGLE_PICKUP, hw.differentialClaw.getRotationAngle());
+                            hw.differentialIntake.setPosition(0.43, hw.differentialIntake.getRotationAngle());
+                        }
                 ),
                 new WaitCommand(Sleep)
 

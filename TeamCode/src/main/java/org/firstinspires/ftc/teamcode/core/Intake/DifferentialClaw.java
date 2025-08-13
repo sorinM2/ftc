@@ -10,14 +10,14 @@ public class DifferentialClaw extends Differential {
     public DifferentialClaw(Hardware hardware, String LeftServo, String RightServo, double offsetRight) {
         super(hardware, LeftServo, RightServo, offsetRight);
     }
-    public static double LINEAR_ANGLE_INIT = 0.38;
+    public static double LINEAR_ANGLE_INIT = 0.35;
     public static double Rotation_ANGLE_INIT = 0.31;
-    public static double LINEAR_ANGLE_SCAN = 0.38;
+    public static double LINEAR_ANGLE_SCAN = 0.33;
     public static double Rotation_ANGLE_SCAN = 0.31;
-    public static double LINEAR_ANGLE_PICKUP = 0.38;
+    public static double LINEAR_ANGLE_PICKUP = 0.33;
     public static double Rotation_ANGLE_PICKUP = 0.31;
-    public static double LINEAR_ANGLE_TRANSFER = 0.04;
-    public static double Rotation_ANGLE_TRANSFER = 0.135;
+    public static double LINEAR_ANGLE_TRANSFER = 0.03;
+    public static double Rotation_ANGLE_TRANSFER = 0.16;
 
     public void Initialize()
     {

@@ -18,7 +18,9 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Commands.Auto.ScanSubmerssibleRepeat;
 import org.firstinspires.ftc.teamcode.Common.Camera;
-import org.firstinspires.ftc.teamcode.Common.GoBildaPinpointDriver;
+import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
+
 import org.firstinspires.ftc.teamcode.Common.StaticVariables;
 import org.firstinspires.ftc.teamcode.core.Intake.Claw;
 import org.firstinspires.ftc.teamcode.core.Intake.DifferentialClaw;
@@ -29,6 +31,7 @@ import org.firstinspires.ftc.teamcode.core.Intake.V4b;
 
 @Config
 public class Hardware implements Mechanism {
+
     public GoBildaPinpointDriver odometry;
 
     public Chasis _chasis;
@@ -56,9 +59,11 @@ public class Hardware implements Mechanism {
 
     public Camera camera;
 
-    public DistanceSensor distSensor;
+    public DigitalChannel distSensor;
     public static double offsetClaw = 0.5;
     public static double offsetIntake = 0.3;
+    public static boolean lastSensorIntakeState = true;
+    VoltageSensor baterie;
     public Hardware(HardwareMap hardwareMap, Gamepad gm1, Gamepad gm2, Telemetry tel)
     {
         StaticVariables.init(hardwareMap, gm1, gm2, tel);
@@ -81,7 +86,14 @@ public class Hardware implements Mechanism {
 
         camera = new Camera();
 
-        distSensor = hardwareMap.get(DistanceSensor.class, "colorSensor");
+        distSensor = hardwareMap.get(DigitalChannel.class, "intakeSensor");
+
+        baterie = hardwareMap.voltageSensor.iterator().next();
+    }
+
+    public double getVoltage()
+    {
+        return baterie.getVoltage();
     }
 
     @Override
@@ -97,6 +109,7 @@ public class Hardware implements Mechanism {
         _intake.Initialize();
         _lift.Initialize();
         transferDetection.setMode(DigitalChannel.Mode.INPUT);
+        distSensor.setMode(DigitalChannel.Mode.INPUT);
         _clawOutake.Initialize();
         _hooks.Initialize();
         _pto.Initialize();
@@ -106,7 +119,7 @@ public class Hardware implements Mechanism {
         _controller2.initialize();
 
         odometry = hardwareMap.get(GoBildaPinpointDriver.class, "odometry");
-        odometry.setOffsets(49.78,-86.59);
+        odometry.setOffsets(49.78,-86.59, DistanceUnit.MM);
         odometry.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
         odometry.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.REVERSED);
         odometry.resetPosAndIMU();
@@ -124,14 +137,18 @@ public class Hardware implements Mechanism {
             _hooks.SetState(Hooks.HooksState.INTERMEDIATE);
             justStarted = false;
         }
-
+        telemetry.addData("odox", odometry.getEncoderX());
+        telemetry.addData("odoy", odometry.getEncoderY());
         _extendo.update();
         _lift.Update();
 
-        _controller1.update();
-        _controller2.update();
+        if ( StaticVariables.teleOp) {
+            _controller1.update();
+            _controller2.update();
+        }
+        lastSensorIntakeState = distSensor.getState();
 
-        telemetry.addData("last distance", ScanSubmerssibleRepeat.lastSensorDistance);
+        telemetry.addData("last intake", lastSensorIntakeState);
 
         camera.setHeight(_lift.getCurrentPosition());
         camera.update();

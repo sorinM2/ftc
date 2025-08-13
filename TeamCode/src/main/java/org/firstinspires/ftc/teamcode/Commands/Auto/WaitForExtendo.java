@@ -9,7 +9,7 @@ import java.util.Collections;
 import java.util.Set;
 
 public class WaitForExtendo implements Command {
-    public static double tolerance = 25;
+    public  double tolerance = 25;
 
     public WaitForExtendo()
     {

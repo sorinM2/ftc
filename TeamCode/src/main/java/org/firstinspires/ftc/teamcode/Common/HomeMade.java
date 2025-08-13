@@ -27,10 +27,10 @@ public class HomeMade {
             pre = post;
             post = lista.get(i);
 
-            double dif = post.second - pre.second;
+            double dif = (post.second - pre.second) / (post.first - pre.first);
 
             if ( search < post.first )
-                return pre.second + (post.first - pre.first) * ( post.first - search) / dif;
+                return pre.second +  ( search - pre.first) * dif;
         }
 
         return 0;

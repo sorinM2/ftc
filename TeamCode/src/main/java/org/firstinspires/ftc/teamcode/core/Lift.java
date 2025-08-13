@@ -5,12 +5,13 @@ import static org.firstinspires.ftc.teamcode.Common.StaticVariables.telemetry;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.teamcode.Common.PIDF;
 
 @Config
 public class Lift {
-    public DcMotor motorUp, motorDown, encoder;
+    public DcMotorEx motorUp, motorDown, encoder;
     public enum LiftStates {
         INIT,
         LOW_BASKET,
@@ -28,8 +29,8 @@ public class Lift {
     }
     public static int delta = 0;
     private PIDF pidf;
-    public static double ascentP = 0.017 , ascentI = 0, ascentD = 0.00005, ascentF = 0;
-    public static double descentP = 0.002, descentI = 0, descentD = 0.0001, descentF = 0;
+    public static double ascentP = 0.015 , ascentI = 0, ascentD = 0.00005, ascentF = 0;
+    public static double descentP = 0.0024, descentI = 0, descentD = 0.000125, descentF = 0.0;
     public static double CT = 0.0005;
 
     public int targetPosition = 0, lastTargetPosition = 0, currentPosition = 0, error, offset = 0;
@@ -41,10 +42,10 @@ public class Lift {
     private final int INIT = 0;
     private final int LOW_BASKET = 280;
     private final int AUTO_TRANSFER = 140;
-    private final int HIGH_BASKET = 610;
-    private final int HIGH_BASKET_AUTO = 675;
+    public static int HIGH_BASKET = 610;
+    public static int HIGH_BASKET_AUTO = 675;
     private final int LOW_CHAMBER = 35;
-    public static int LOW_CHAMBER_RELEASE = 125;
+    public static int LOW_CHAMBER_RELEASE = 157;
     public static int HIGH_CHAMBER = 480;
     public static int HIGH_CHAMBER_PRELOAD = 480;
     public static int HIGH_CHAMBER_RELEASE = 600;
@@ -62,8 +63,8 @@ public class Lift {
 
     public void Initialize()
     {
-        motorUp = hardwareMap.get(DcMotor.class, "motorLiftUp");
-        motorDown = hardwareMap.get(DcMotor.class, "motorLiftDown");
+        motorUp = hardwareMap.get(DcMotorEx.class, "motorLiftUp");
+        motorDown = hardwareMap.get(DcMotorEx.class, "motorLiftDown");
 
         motorUp.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorUp.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);

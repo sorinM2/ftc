@@ -20,6 +20,11 @@ import org.firstinspires.ftc.teamcode.core.OuttakeDifferential;
 public class ScoreHighSubmersible extends SequentialCommandGroup {
     public ScoreHighSubmersible(Hardware hw, double x, double y, double h, MovementCommand movement)
     {
+        this(hw, x, y, h, movement, 230);
+    }
+
+    public ScoreHighSubmersible(Hardware hw, double x, double y, double h, MovementCommand movement, int liftDelay)
+    {
         super(
                 new InstantCommand(()->{
                     hw._lift.SetState(Lift.LiftStates.HIGH_BASKET_AUTO);
@@ -29,28 +34,32 @@ public class ScoreHighSubmersible extends SequentialCommandGroup {
                 }),
                 new ParallelRaceGroup(
                          new ParallelCommandGroup(
-                            new WaitForPosition(4),
-                            new WaitForAngle(4)
+                            new WaitForPosition(15),
+                            new WaitForAngle(15)
                          ),
-                        new WaitCommand(1200)
+                        new WaitCommand(1700)
 
                         ),
-                new WaitForLift(30),
+                new WaitForLift(liftDelay),
                 new InstantCommand(()->
                 {
                     hw.differential.setPosition(OuttakeDifferential.LINEAR_ANGLE_BASKET_AUTO, OuttakeDifferential.ROTATION_ANGLE_FORWARD);
                 }),
-                new WaitCommand(60),
+                new WaitCommand(70),
                 new InstantCommand(()->
                 {
                     hw._clawOutake.openClaw();
                 }),
-                new WaitCommand(120),
-                new InstantCommand(()-> {movement.angleWalk = true;}),
+                new WaitCommand(100),
+                new InstantCommand(()-> {
+                    movement.angleWalk = true;
+                    movement.pidDistance();
+                }),
                 new ChangePosition(x, y, h),
-                new WaitCommand(400),
+                new WaitCommand(300),
                 new InstantCommand(()->{
-                    hw._lift.SetState(Lift.LiftStates.INIT);
+                    hw._lift.SetState(Lift.LiftStates.LOW_CHAMBER_RELEASE);
+                    hw._extendo.SetState(Extendo.ExtendoStates.INIT);
                     hw.differential.SetState(OuttakeDifferential.DifferentialStates.BASKET_INTERMEDIATE);
                     hw._intake.SetState(Intake.IntakeState.Outake);
                 })

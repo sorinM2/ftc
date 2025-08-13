@@ -2,9 +2,11 @@ package org.firstinspires.ftc.teamcode.core;
 
 import static org.firstinspires.ftc.teamcode.Common.StaticVariables.hardwareMap;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.hardware.ServoEx;
 import com.arcrobotics.ftclib.hardware.SimpleServo;
 
+@Config
 public class Hooks {
     private ServoEx servoLeft, servoRight;
 
@@ -18,11 +20,11 @@ public class Hooks {
 
     private HooksState state;
 
-    private final double INIT = 0.1;
-    public static double INTERMEDIATE = 0.52;
-    public static double RELEASE = 0.3;
-    public static double ACTIVATED = 0.8;
-    public static double READY_LVL_3 = 0.9;
+    public static double INIT = 0.02;
+    public static double INTERMEDIATE = 0.28;
+    public static double RELEASE = 0.2;
+    public static double ACTIVATED = 0.6     ;
+    public static double READY_LVL_3 = 0.6;
 
     public void Initialize()
     {
@@ -62,7 +64,7 @@ public class Hooks {
                 break;
         }
     }
-    public static double rightOffset = 0.1d;
+    public static double rightOffset = 0.18d;
     private void setPosition(double position) {
         servoLeft.setPosition(position);
         servoRight.setPosition(position + rightOffset);

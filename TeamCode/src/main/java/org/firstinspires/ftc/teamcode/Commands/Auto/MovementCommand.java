@@ -10,7 +10,7 @@ import com.arcrobotics.ftclib.command.Subsystem;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
-import org.firstinspires.ftc.teamcode.Common.GoBildaPinpointDriver;
+import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import org.firstinspires.ftc.teamcode.Common.PIDF;
 import org.firstinspires.ftc.teamcode.core.Hardware;
 import org.opencv.core.Mat;
@@ -26,8 +26,10 @@ public class MovementCommand implements Command {
     public static double deltaDistance = 0.d, deltaAngle = 0.d;
 
     private static PIDF distancePID = new PIDF(), turningPID = new PIDF();
-    public static double distanceP = 0.022, distanceI = 0, distanceD = 0.003, distanceF = 0.15;
-    public static double turningP = 0.022, turningI = 0.0, turningD = 0.002, turningF = 0;
+    public static double distanceP = 0.024, distanceI = 0, distanceD = 0.003, distanceF = 0.15;
+    public static double bigDistanceP = 0.023, bigDistanceI = 0 ,bigDistanceD = 0.01, bigDistanceF = 0.15;
+    public static double turningP = 0.016, turningI = 0.0, turningD = 0.002, turningF = 0;
+    public static double bigturningP = 0.015, bigturningI = 0.0, bigturningD = 0.003, bigturningF = 0;
     public static double correctionK = 0.1;
     public static double corK = 0.1;
     private static double targetX = 0, targetY = 0, targetH = 90, maximumSpeed, startX, startY;
@@ -43,7 +45,11 @@ public class MovementCommand implements Command {
 
         pathAngle = Math.atan2(targetY - startY, targetX - startX);
 
-        distancePID.setCoefficients(distanceP, distanceI, distanceD, distanceF);
+        double deltaY = targetY - startY;
+        double deltaX = targetX - startX;
+
+
+
         distancePID.setTargetSpeed(maximumSpeed);
         distancePID.resetReference();
 
@@ -54,10 +60,6 @@ public class MovementCommand implements Command {
 
     public static void setNewTargetHeading(double targeth) {
         targetH = targeth;
-
-        distancePID.setCoefficients(distanceP, distanceI, distanceD, distanceF);
-        distancePID.setTargetSpeed(maximumSpeed);
-        distancePID.resetReference();
 
         turningPID.setCoefficients(turningP, turningI, turningD, turningF);
         turningPID.setTargetSpeed(maximumSpeed);
@@ -76,9 +78,12 @@ public class MovementCommand implements Command {
 
     @Override
     public void initialize() {
+        distancePID.setCoefficients(distanceP, distanceI, distanceD, distanceF);
+        turningPID.setCoefficients(turningP, turningI, turningD, turningF);
 
     }
 
+    public boolean spikes = false;
     public boolean angleWalk = false;
     @Override
     public void execute() {
@@ -100,28 +105,39 @@ public class MovementCommand implements Command {
         double deltaY = targetY - robotY;
         double deltaH = targetH - robotH;
 
+        double distance = Math.sqrt((Math.pow(deltaX, 2) + Math.pow(deltaY, 2)));
+
+//        if ( distance < 2 )
+//        {
+//            robotVelocityX = 0;
+//            robotVelocityY = 0;
+//            robotVelocityW = 0;
+//            return;
+//        }
+
         while (deltaH > 360) deltaH -= 360;
         while (deltaH < -360) deltaH += 360;
 
         if (deltaH > 180) deltaH -= 360;
         if (deltaH < -180) deltaH += 360;
 
-        double distance = Math.sqrt((Math.pow(deltaX, 2) + Math.pow(deltaY, 2)));
 
         deltaDistance = distance;
         deltaAngle = deltaH;
 
         double absoluteAngle = Math.atan2(deltaY, deltaX);
 
-        distancePID.setCoefficients(distanceP, distanceI, distanceD, distanceF);
         double speed = distancePID.getOutput(distance);
 
-        turningPID.setCoefficients(turningP, turningI, turningD, turningF);
         double turningSpeed = turningPID.getOutput(deltaH);
 
-        if ( angleWalk )
+        if ( angleWalk ) {
             correctionK = corK;
-        else correctionK = 0.0;
+        }
+        else
+        {
+            correctionK = 0.0;
+        }
 
         double correctionSpeed = getPerpendicular(startX, startY, robotX, robotY, targetX, targetY) * correctionK;
         double correctionForceAngle = pathAngle + getSign(startX, startY, robotX, robotY, targetX, targetY) * Math.PI / 2;
@@ -160,8 +176,27 @@ public class MovementCommand implements Command {
 
         telemetry.addData("deltaH", deltaH);
 
+        telemetry.addData("deltaD", deltaDistance);
+
     }
 
+    public void pidDistance()
+    {
+        distancePID.setCoefficients(bigDistanceP, bigDistanceI, bigDistanceD, bigDistanceF);
+        distancePID.setCoefficients(bigturningP, bigturningI, bigturningD, bigturningF);
+    }
+    public void pidClose()
+    {
+        distancePID.setCoefficients(distanceP, distanceI, distanceD, distanceF);
+        distancePID.setCoefficients(turningP, turningI, turningD, turningF);
+
+    }
+
+    public void pidBasket()
+    {
+        distancePID.setCoefficients(distanceP, distanceI, distanceD + 0.0025, distanceF);
+        distancePID.setCoefficients(turningP, turningI, turningD, turningF);
+    }
     @Override
     public void end(boolean interrupted) {
         Command.super.end(interrupted);

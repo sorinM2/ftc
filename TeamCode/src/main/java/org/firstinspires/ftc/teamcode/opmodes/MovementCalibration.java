@@ -25,6 +25,7 @@ import org.firstinspires.ftc.teamcode.Commands.IntakeRetract;
 import org.firstinspires.ftc.teamcode.Commands.Auto.MovementCommand;
 import org.firstinspires.ftc.teamcode.Commands.Auto.WaitForPosition;
 import org.firstinspires.ftc.teamcode.Commands.Pickup;
+import org.firstinspires.ftc.teamcode.Common.StaticVariables;
 import org.firstinspires.ftc.teamcode.core.Hardware;
 import org.firstinspires.ftc.teamcode.core.Intake.DifferentialClaw;
 import org.firstinspires.ftc.teamcode.core.Intake.DifferentialIntake;
@@ -35,6 +36,7 @@ import org.firstinspires.ftc.teamcode.core.Lift;
 @Config
 @Autonomous
 public class MovementCalibration extends CommandOpMode {
+
     SequentialCommandGroup testCommand;
 
     Hardware _hardware;
@@ -49,6 +51,7 @@ public class MovementCalibration extends CommandOpMode {
     public int extendoPos = 0;
     @Override
     public void initialize() {
+
         CommandScheduler.getInstance().reset();
         _hardware = new Hardware(hardwareMap, gamepad1, gamepad2, telemetry);
         _hardware.initialize();
@@ -60,6 +63,7 @@ public class MovementCalibration extends CommandOpMode {
 
         testCommand = new SequentialCommandGroup(
                new ScanSubmerssibleRepeat(_hardware),
+                new WaitCommand(50),
                 new RetractExtendo(_hardware)
         );
 
@@ -72,7 +76,8 @@ public class MovementCalibration extends CommandOpMode {
     @Override
     public void run()
     {
-
+        telemetry.addData("YPOS", Scan.YPOS);
+        telemetry.addData("ext camera", Scan.extendoPos);
         CommandScheduler.getInstance().run();
         _hardware.update();
         //_hardware._chasis.setMovement(MovementCommand.robotVelocityX, MovementCommand.robotVelocityY, MovementCommand.robotVelocityW);

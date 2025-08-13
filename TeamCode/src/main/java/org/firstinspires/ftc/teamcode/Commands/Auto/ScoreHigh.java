@@ -11,6 +11,8 @@ import org.firstinspires.ftc.teamcode.Commands.Auto.PickupAuto;
 import org.firstinspires.ftc.teamcode.Common.StaticVariables;
 import org.firstinspires.ftc.teamcode.core.Hardware;
 import org.firstinspires.ftc.teamcode.core.Intake.Claw;
+import org.firstinspires.ftc.teamcode.core.Intake.DifferentialClaw;
+import org.firstinspires.ftc.teamcode.core.Intake.DifferentialIntake;
 import org.firstinspires.ftc.teamcode.core.Intake.Extendo;
 import org.firstinspires.ftc.teamcode.core.Intake.V4b;
 import org.firstinspires.ftc.teamcode.core.Lift;
@@ -33,12 +35,12 @@ public class ScoreHigh extends SequentialCommandGroup {
                     ),
                     new WaitCommand(wait)
                 ),
-                new WaitForLift(50),
+                new WaitForLift(350),
                 new InstantCommand(()->
                 {
                     hw.differential.setPosition(OuttakeDifferential.LINEAR_ANGLE_BASKET_AUTO, OuttakeDifferential.ROTATION_ANGLE_FORWARD);
                 }),
-                new WaitCommand(20),
+                new WaitForLift(30),
                 new ParallelCommandGroup(
                     new InstantCommand(()->
                     {
@@ -47,7 +49,7 @@ public class ScoreHigh extends SequentialCommandGroup {
                     new PickupAuto(hw)
 
                 ),
-                new WaitCommand(10),
+                new WaitCommand(70),
                 new InstantCommand(()->{hw.differential.setPosition(OuttakeDifferential.LINEAR_ANGLE_INIT, OuttakeDifferential.ROTATION_ANGLE_INIT);
                     hw._lift.SetState(Lift.LiftStates.AUTO_TRANSFER);
                 })

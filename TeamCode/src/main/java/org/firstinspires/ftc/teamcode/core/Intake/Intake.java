@@ -26,7 +26,7 @@ public class Intake {
         servoIntake = new SimpleServo(hardwareMap, "servoIntake", 0, 1);
         SetState(IntakeState.Intake);
     }
-    public static double  IntakePos = 0.63, OutakePos = 0.33, IdlePos = 0.2d;
+    public static double  IntakePos = 0.88, OutakePos = 0.6, IdlePos = 0.6d;
 
     public void SetState(IntakeState state)
     {

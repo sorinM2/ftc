@@ -12,6 +12,7 @@ import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.command.WaitUntilCommand;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Commands.Auto.ChangePosition;
 import org.firstinspires.ftc.teamcode.Commands.Auto.Extend;
@@ -26,6 +27,7 @@ import org.firstinspires.ftc.teamcode.Commands.IntakeRetract;
 import org.firstinspires.ftc.teamcode.Commands.Auto.MovementCommand;
 import org.firstinspires.ftc.teamcode.Commands.Auto.WaitForPosition;
 import org.firstinspires.ftc.teamcode.Commands.Pickup;
+import org.firstinspires.ftc.teamcode.Common.StaticVariables;
 import org.firstinspires.ftc.teamcode.core.Hardware;
 import org.firstinspires.ftc.teamcode.core.Intake.DifferentialClaw;
 import org.firstinspires.ftc.teamcode.core.Intake.DifferentialIntake;
@@ -50,36 +52,47 @@ public class Positions extends CommandOpMode {
     public int extendoPos = 0;
     @Override
     public void initialize() {
+        StaticVariables.teleOp = false;
+
         CommandScheduler.getInstance().reset();
         _hardware = new Hardware(hardwareMap, gamepad1, gamepad2, telemetry);
         _hardware.initialize();
 
         movement = new MovementCommand(_hardware);
-        MovementCommand.parked = true;
+        MovementCommand.parked = false;
         //MovementCommand.parked = true;
         CommandScheduler.getInstance().schedule(movement);
 
         testCommand = new SequentialCommandGroup(
-
+            new ChangePosition(0, 0, 0)
         );
 
 
         CommandScheduler.getInstance().schedule(
                 testCommand
         );
+
+        while ( !opModeIsActive())
+        {
+            _hardware.odometry.update();
+
+            telemetry.addData("robotX", _hardware.odometry.getPosition().getX(DistanceUnit.CM));
+            telemetry.addData("robotY", _hardware.odometry.getPosition().getY(DistanceUnit.CM));
+            telemetry.addData("robotH", _hardware.odometry.getPosition().getHeading(AngleUnit.DEGREES));
+            telemetry.update();
+        }
     }
 
     @Override
     public void run()
     {
-        telemetry.addData("distanta sensor", _hardware.distSensor.getDistance(DistanceUnit.MM));
 
         CommandScheduler.getInstance().run();
         //_hardware.camera.getCoordinates(30, 30);
         //_hardware._extendo.setPosition(_hardware.camera.extendoPos);
         _hardware._controller1.update();
         _hardware.update();
-        //_hardware._chasis.setMovement(MovementCommand.robotVelocityX, MovementCommand.robotVelocityY, MovementCommand.robotVelocityW);
-        //_hardware._chasis.updateFieldCentric();
+        _hardware._chasis.setMovement(MovementCommand.robotVelocityX, MovementCommand.robotVelocityY, MovementCommand.robotVelocityW);
+        _hardware._chasis.updateFieldCentric();
     }
 }

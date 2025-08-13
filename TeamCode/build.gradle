@@ -24,6 +24,10 @@ android {
 }
 
 dependencies {
+    implementation 'com.squareup.okhttp3:okhttp:5.1.0'
+    implementation "com.bylazar:ftcontrol:0.6.8"
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+
     implementation project(':FtcRobotController')
     implementation 'org.ftclib.ftclib:core:2.1.1'
 }

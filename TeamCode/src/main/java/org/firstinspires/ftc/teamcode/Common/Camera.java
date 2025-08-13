@@ -27,8 +27,8 @@ public class Camera {
     public double sampleX = 0, sampleY = 0, sampleH = 0;
 
     public static double turretMultiplier = 0.0032;
-    public static double turretInit = 0.05;
-    public static double clawInit = 0.31;
+    public static double turretInit = 0.06;
+    public static double clawInit = 0.3;
     public int extendoPos = 0;
     public double turretPos = 0;
     public double clawPos = 0;
@@ -42,18 +42,18 @@ public class Camera {
         clawHome = new HomeMade();
 
         extendoHome.add(0, 0);
-        extendoHome.add(2, 33);
-        extendoHome.add(5, 44);
-        extendoHome.add(10, 60);
-        extendoHome.add(15, 68);
-        extendoHome.add(20, 83);
-        extendoHome.add(25, 98);
-        extendoHome.add(30, 111);
-        extendoHome.add(35, 123);
-        extendoHome.add(40, 146);
-        extendoHome.add(45, 167);
-        extendoHome.add(50, 193);
-        extendoHome.add(54, 230);
+        extendoHome.add(2, 0);
+        extendoHome.add(5, 8);
+        extendoHome.add(10, 30);
+        extendoHome.add(15, 38);
+        extendoHome.add(20, 60);
+        extendoHome.add(25, 77);
+        extendoHome.add(30, 91);
+        extendoHome.add(35, 120);
+        extendoHome.add(40, 136);
+        extendoHome.add(45, 166);
+        extendoHome.add(50, 203);
+        extendoHome.add(52, 230);
 
     }
 
@@ -65,9 +65,7 @@ public class Camera {
 
         if (!activated) return;
 
-        telemetry.addData("sampleX", sampleX);
-        telemetry.addData("sampleY", sampleY);
-        telemetry.addData("sampleH", sampleH);
+
         result = limelight.getLatestResult();
         telemetry.addData("state", result != null);
 
@@ -139,7 +137,7 @@ public class Camera {
 
     public static int clawMultiplier = 9;
 
-    public static double cameraOffset = 34;
+    public static double cameraOffset = 26;
 
     public static double test = 30;
     public static double testIntake = 30;
@@ -150,7 +148,7 @@ public class Camera {
         sampleY = cameraHeight * Math.tan(Math.toRadians(ty + cameraAngle)) - cameraOffset;
         sampleX = Math.sqrt(sampleY * sampleY + cameraHeight * cameraHeight) * Math.tan(Math.toRadians(tx));
 
-        if ( sampleY != 0 && sampleX != 0) {
+        if ( sampleY != 0 && sampleX != 0 && sampleY > 5 && sampleY < 55) {
 
             double turretArmDifference = Math.sqrt(18 * 18 - sampleX * sampleX);
             sampleY -= turretArmDifference;
@@ -164,6 +162,9 @@ public class Camera {
             clawPos = clawInit - ( sampleH - 90 - turretAngle) / clawDivide;
 
         }
+        telemetry.addData("sampleX", sampleX);
+        telemetry.addData("sampleY", sampleY);
+        telemetry.addData("sampleH", sampleH);
 
         telemetry.addData("angle claw", clawPos);
         telemetry.addData("turretpos", turretPos);

@@ -45,8 +45,10 @@ public class Hang implements Command {
     private ElapsedTime timer = new ElapsedTime();
     private double waitingTime;
 
-    public static double retractPower = 1, keepPower = 0.45;
-    public static int liftRetractLvl2 = 250, liftRetractLvl3 = 0;
+    public static double retractPower = 1, keepPower = 0.3;
+    public static int liftRetractLvl2 = 270, liftRetractLvl3 = 0;
+
+    public static double powerLvl2 = 0.75;
 
     @Override
     public void initialize() {
@@ -72,7 +74,7 @@ public class Hang implements Command {
                     _hardware.differentialClaw.setPosition(0.51, 0.28);
                     _hardware.differential.SetState(OuttakeDifferential.DifferentialStates.FENCE);
 
-                    retractPower = 0.7;
+                    retractPower = powerLvl2 * 12.7 / _hardware.getVoltage();
 
                     if (_hardware._lift.getCurrentPosition() >= Lift.HANG_LVL2 - 50) {
                         _hardware._pto.SetState(Pto.PTOStates.ACTIVATED);
@@ -80,7 +82,7 @@ public class Hang implements Command {
 
                         state = HangStates.WAITING;
                         nextState = HangStates.HANG_LVL_2;
-                        waitingTime = 0.3; timer.reset();
+                        waitingTime = 0.1; timer.reset();
                     }
 
                     break;
@@ -94,7 +96,7 @@ public class Hang implements Command {
                         _hardware._hooks.SetState(Hooks.HooksState.ACTIVATED);
 
                         state = HangStates.KEEP_POSITION;
-                        timer.reset(); waitingTime = 0.1;
+                        timer.reset(); waitingTime = 0.3;
                     }
 
                     break;

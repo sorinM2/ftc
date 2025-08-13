@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class StaticVariables {
+    public static boolean teleOp = false;
     public static double robotX, robotY, robotH;
 
     public static Telemetry telemetry;

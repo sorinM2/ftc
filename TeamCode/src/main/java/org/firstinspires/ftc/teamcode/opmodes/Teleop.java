@@ -4,6 +4,7 @@ import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.Commands.ResetLift;
 import org.firstinspires.ftc.teamcode.Common.StaticVariables;
 import org.firstinspires.ftc.teamcode.core.Hardware;
 import org.firstinspires.ftc.teamcode.core.Pto;
@@ -17,9 +18,13 @@ public class Teleop extends CommandOpMode {
 
     @Override
     public void initialize() {
+
+        StaticVariables.teleOp = true;
         CommandScheduler.getInstance().reset();
         _hardware = new Hardware(hardwareMap, gamepad1, gamepad2, telemetry);
         _hardware.initialize();
+        CommandScheduler.getInstance().schedule(new ResetLift(_hardware));
+
     }
 
     @Override

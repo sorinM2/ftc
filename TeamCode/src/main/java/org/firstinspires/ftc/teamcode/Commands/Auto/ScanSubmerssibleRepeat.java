@@ -22,7 +22,6 @@ import java.util.Set;
 @Config
 public class ScanSubmerssibleRepeat implements Command {
 
-    public static double lastSensorDistance = 0.d;
     Scan scanCommand;
     private Hardware _hardware;
 
@@ -38,7 +37,7 @@ public class ScanSubmerssibleRepeat implements Command {
         scanCommand = new Scan(_hardware);
         scanCommand.initialize();
     }
-    public static int tolerance = 20;
+    public static int tolerance = 21;
     @Override
     public void execute() {
 
@@ -46,8 +45,7 @@ public class ScanSubmerssibleRepeat implements Command {
 
         if ( Scan.ScanFinsihed )
         {
-            lastSensorDistance = _hardware.distSensor.getDistance(DistanceUnit.MM);
-            if ( lastSensorDistance> tolerance )
+            if ( Hardware.lastSensorIntakeState || tolerance < 5 )
             {
                 _hardware._extendo.SetState(Extendo.ExtendoStates.INIT);
                 _hardware.differentialIntake.SetState(DifferentialIntake.IntakeDifferentialStates.INIT);
@@ -55,7 +53,12 @@ public class ScanSubmerssibleRepeat implements Command {
                 Scan.ScanFinsihed = false;
                 scanCommand.initialize();
             }
-            else finished = true;
+            else
+            {
+                finished = true;
+                MovementCommand.parked = false;
+
+            }
         }
     }
 

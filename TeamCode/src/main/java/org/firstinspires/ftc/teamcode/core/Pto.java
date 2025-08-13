@@ -17,8 +17,8 @@ public class Pto {
     public PTOStates state = PTOStates.INIT;
     public static double INITLEFT = 0.2;
     public static double INITRIGHT = 0.15;
-    public static double ACTIVATEDLEFT = 0.3;
-    public static double ACTIVATEDRIGHT = 0.28;
+    public static double ACTIVATEDLEFT = 0.34;
+    public static double ACTIVATEDRIGHT = 0.27;
 
     public void Initialize()
     {

@@ -10,10 +10,10 @@ import com.qualcomm.robotcore.hardware.Servo;
 @Config
 public class ClawOutake {
     ServoEx servoClaw;
-    public static double CLAW_OPEN = 0.45;
+    public static double CLAW_OPEN = 0.37;
     public static double CLAW_TRANSFER = 0.2;
-    public static double CLAW_CLOSED_SPECIMEN = 0.64;
-    public static double CLAW_CLOSED_SAMPLE = 0.64;
+    public static double CLAW_CLOSED_SPECIMEN = 0.66;
+    public static double CLAW_CLOSED_SAMPLE = 0.66;
     public static double CLAW_AUTO_FENCE = 0.18;
 
     public boolean open = true;

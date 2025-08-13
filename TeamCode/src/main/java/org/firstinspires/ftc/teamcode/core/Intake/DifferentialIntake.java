@@ -13,12 +13,12 @@ public class DifferentialIntake extends Differential {
 
     public static double LINEAR_ANGLE_INIT = 0.3;
     public static double Rotation_ANGLE_INIT = -0.2;
-    public static double LINEAR_ANGLE_SCAN = 0.42;
+    public static double LINEAR_ANGLE_SCAN = 0.43;
     public static double Rotation_ANGLE_SCAN = 0.08;
-    public static double LINEAR_ANGLE_PICKUP = 0.56;
+    public static double LINEAR_ANGLE_PICKUP = 0.5;
     public static double Rotation_ANGLE_PICKUP = 0.08;
     public static double LINEAR_ANGLE_TRANSFER = 0.2;
-    public static double Rotation_ANGLE_TRANSFER = 0.075;
+    public static double Rotation_ANGLE_TRANSFER = 0.1;
 
     public void Initialize()
     {

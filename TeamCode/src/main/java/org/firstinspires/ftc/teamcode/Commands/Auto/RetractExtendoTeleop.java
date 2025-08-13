@@ -30,6 +30,7 @@ public class RetractExtendoTeleop extends SequentialCommandGroup {
     public RetractExtendoTeleop(Hardware hw, int delay)
     {
         super(
+
                 new InstantCommand(()->{hw._lift.SetState(Lift.LiftStates.LOW_CHAMBER_RELEASE);}),
                 new InstantCommand(()->{
                     hw.differentialIntake.SetState(DifferentialIntake.IntakeDifferentialStates.TRANSFER);
@@ -48,12 +49,22 @@ public class RetractExtendoTeleop extends SequentialCommandGroup {
                     hw._intake.SetState(Intake.IntakeState.Outake);
                     hw._clawOutake.closeClawSample();
                 }),
-                new WaitCommand(40),
+                new WaitCommand(100),
                 new InstantCommand(()->
                 {
-                    hw.differential.SetState(OuttakeDifferential.DifferentialStates.INTERMEDIATE);
+                    if ( hw._extendo.state == Extendo.ExtendoStates.TRANSFER) {
+                        hw.differential.SetState(OuttakeDifferential.DifferentialStates.INTERMEDIATE);
+                        hw.differentialIntake.SetState(DifferentialIntake.IntakeDifferentialStates.SCAN);
+                    }
+                }),
+                new WaitCommand(300),
+            new InstantCommand(()->
+            {
+                if ( hw._extendo.state == Extendo.ExtendoStates.TRANSFER) {
+                    hw._extendo.SetState(Extendo.ExtendoStates.INIT);
                     hw.differentialIntake.SetState(DifferentialIntake.IntakeDifferentialStates.INIT);
-                })
+                }
+            })
                 //new InstantCommand(()->{hw.v4b.SetState(V4b.V4BStates.INIT);})
         );
     }

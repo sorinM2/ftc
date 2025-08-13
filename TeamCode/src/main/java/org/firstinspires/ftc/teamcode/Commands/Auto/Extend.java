@@ -22,8 +22,8 @@ public class Extend extends InstantCommand {
                       hw._extendo.setPosition(epos);
                       //hw.v4b.SetState(V4b.V4BStates.SCANNING);
                       //hw._claw.SetState(Claw.ClawState.SCAN);
-                      hw.differentialIntake.SetState(DifferentialIntake.IntakeDifferentialStates.SCAN);
-                      hw.differentialClaw.SetState(DifferentialClaw.ClawDifferentialStates.SCAN);
+//                      hw.differentialIntake.SetState(DifferentialIntake.IntakeDifferentialStates.SCAN);
+//                      hw.differentialClaw.SetState(DifferentialClaw.ClawDifferentialStates.SCAN);
                       hw._intake.SetState(Intake.IntakeState.Outake);
                   }
         );

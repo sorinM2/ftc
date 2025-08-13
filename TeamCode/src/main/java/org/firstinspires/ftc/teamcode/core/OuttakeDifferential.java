@@ -12,13 +12,13 @@ public class OuttakeDifferential extends Differential{
     public static double LINEAR_ANGLE_START = 0.1;
     private final double LINEAR_ANGLE_INTERMEDIATE = 0.3;
     public static double LINEAR_ANGLE_BASKET = 0.36;
-    public static double LINEAR_ANGLE_BASKET_AUTO = 0.46;
+    public static double LINEAR_ANGLE_BASKET_AUTO = 0.435;
     private final double LINEAR_ANGLE_BASKET_INTERMEDIATE = 0.3;
     private final double LINEAR_ANGLE_BASKET_ROTATED = 0.38;
     public static double LINEAR_ANGLE_FENCE = 0.055;
     public static double LINEAR_ANGLE_SPECIMEN_READY_TO_RELEASE = 0.7;
     public static double LINEAR_ANGLE_SPECIMEN_RELEASE = 0.7;
-    private final double LINEAR_ANGLE_PARKING_AUTO = 0.34;
+    private final double LINEAR_ANGLE_PARKING_AUTO = 0.38;
     private final double LINEAR_ANGLE_HUMAN_PLAYER = 0.4;
 
     public static double ROTATION_ANGLE_INIT = -0.06;
@@ -41,9 +41,12 @@ public class OuttakeDifferential extends Differential{
         PARKING_AUTO;
     }
 
+    DifferentialStates state = DifferentialStates.INIT;
     double linearAngle, rotationAngle;
+
     public void SetState(DifferentialStates state)
     {
+        this.state = state;
         switch (state) {
             case INIT:
                 linearAngle = LINEAR_ANGLE_INIT;
